@@ -1,4 +1,4 @@
-```
+```json
 {
     // C:\Users\hd\AppData\Roaming\Code\User\settings.json
     // ～/.config/Code/User/settings.json
@@ -23,6 +23,63 @@
 
 
 
+# 快捷键
 
 
-alt + shit + 鼠标拖动 # 列选择
+
+| alt + shit + 鼠标拖动 | 列选择         |
+| --------------------- | -------------- |
+| ctrl + shift + x      | 拓展           |
+| ctrl + \              | 左右分区       |
+| ctrl + $number        | 选择激活窗口   |
+| ctrl + w              | 关闭当前窗口   |
+| alt + -               | 跳回之前的位置 |
+|                       |                |
+|                       |                |
+|                       |                |
+|                       |                |
+
+
+
+
+
+
+
+
+
+
+
+# 拓展
+
+- #### Chinese(Simplified) Language Pack for Visual Stidio Code
+
+  汉语包
+
+- 
+
+
+
+
+
+
+
+
+
+
+
+# py
+
+ctrl + shift + x --> 在搜索框内输入python然后安装 ms-python.python
+
+
+
+
+
+
+
+
+
+
+
+# go
+

@@ -26,6 +26,42 @@ go env GOOS GOARCH # 获取go内置变量的值
 
 
 
+```bash
+go env -w GO111MODULE=on
+# 开启go模块功能
+```
+
+
+
+```bash
+go env -w GOPROXY=https://goproxy.io,direct
+# 设置go模块镜像
+# 七牛 https://goproxy.cn,direct
+# 阿里云 https://mirrors.aliyun.com/goproxy/,direct
+```
+
+
+
+```bash
+go clean --modcache # 清理模块缓存
+```
+
+
+
+# error
+
+exec: "gcc": executable file not found in %PATH%
+
+https://jaist.dl.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-posix/seh/x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z
+
+
+
+go run: cannot run non-main package
+
+main方法只能放在package main中，go run 是执行命令，必须要一个main用来调用，install可以直接编译成包文件，也可以编译出exe（如果有main函数的话）
+
+
+
 | $GOOS | $GOARCH |
 | ----- | ------- |
 | android   | arm      |

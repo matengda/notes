@@ -61,3 +61,8 @@ pip install -r $file
 # -r, --requirement <file> # 安装文件列表
 ```
 
+
+
+**https://www.lfd.uci.edu/~gohlke/pythonlibs/**
+
+这个网站有很多whl安装包

@@ -1,6 +1,7 @@
 ```bash
 getenforce # 查看SElinux状态
-# Enforcing 开启 Permissive 关闭
+# Enforcing 开启 
+# Permissive 关闭
 ```
 
 ```bash

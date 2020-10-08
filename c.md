@@ -162,3 +162,34 @@ main(void)
 | **wchar.h(c95)**       | **扩展多字体和宽字符工具**                           |
 | **wctype.h(c95)**      | **用来确定包含与宽字符数据中的类型的函数**           |
 
+
+
+# stdio.h
+
+printf()
+
+| 说明符（specifier） | 对应数据类型 | 描述                                                    |
+| --------------------- | ---------------- | ------------------------------------------------------------ |
+| d / i                 | int              | 输出类型为有符号的十进制整数，i 是老式写法                   |
+| o                     | unsigned int     | 输出类型为无符号八进制整数（没有前导 0）                     |
+| u                     | unsigned int     | 输出类型为无符号十进制整数                                   |
+| x / X                 | unsigned int     | 输出类型为无符号十六进制整数，x 对应的是 abcdef，X 对应的是 ABCDEF（没有前导 0x 或者 0X） |
+| f / lf                | double           | 输出类型为十进制表示的浮点数，默认精度为6（lf 在 C99 开始加入标准，意思和 f 相同） |
+| e / E                 | double           | 输出类型为科学计数法表示的数，此处 "e" 的大小写代表在输出时用的 “e” 的大小写，默认浮点数精度为6 |
+| g                     | double           | 根据数值不同自动选择 %f 或 %e，%e 格式在指数小于-4或指数大于等于精度时用使用 [1] |
+| G                     | double           | 根据数值不同自动选择 %f 或 %E，%E 格式在指数小于-4或指数大于等于精度时用使用 |
+| c                     | char             | 输出类型为字符型。可以把输入的数字按照ASCII码相应转换为对应的字符 |
+| s                     | char *           | 输出类型为字符串。输出字符串中的字符直至遇到字符串中的空字符（字符串以 '\0‘ 结尾，这个 '\0' 即空字符）或者已打印了由精度指定的字符数 |
+| p                     | void *           | 以16进制形式输出指针                                         |
+| %                     | 不转换参数       | 不进行转换，输出字符‘%’（百分号）本身                        |
+| n                     | int *            | 到此字符之前为止，一共输出的字符个数，不输出文本 [4]         |
+
+ 
+
+# 标准库
+
+- [freebsd](https://svnweb.freebsd.org/base/head/lib/libc/)
+- [openbsd](http://cvsweb.openbsd.org/cgi-bin/cvsweb/src/lib/libc/)
+- [netbsd](http://cvsweb.netbsd.org/bsdweb.cgi/src/lib/libc/)
+- [glibc](https://sourceware.org/git/?p=glibc.git;a=tree)
+- [ulibc](https://git.uclibc.org/uClibc/tree/libc)
