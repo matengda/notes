@@ -115,6 +115,13 @@ for i in url:
 # powershell
 
 ```powershell
+scp -i $env:home/.ssh/id_rsa $env:notes/*.txt root@$remoteHost:/root/notes
+# 上传全部txt文件到服务器
+```
+
+
+
+```powershell
 # C:\Users\sa\Documents\PowerShell\Microsoft.PowerShell_profile.ps1
 
 # 引入 posh-git
@@ -347,6 +354,34 @@ REM 是注释符
 ```
 
 
+
+
+
+
+
+# 文件夹
+
+- $WinREAgent
+
+  这应该是升级失败自动创建的文件（Microsoft-Windows-WinRE-RecoveryAgent）。
+
+  应该是“进入安全模式后，把Windows updata打开了”导致的。
+
+  您现在在设置中是否还有失败的更新操作呢？
+
+  另外带$通常为临时文件，约两个礼拜的时间后会自动删除。
+
+
+
+
+
+
+
+
+
+| 文件夹 | 说明       |
+| ------ | ---------- |
+| C:\    | 系统根目录 |
 
 
 
