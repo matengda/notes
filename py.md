@@ -1253,41 +1253,41 @@ TypeError: unhashable type: 'dict'
 
 # 关键字
 
-|     **关键字**      |                    **描述**                    |
-| :-----------------: | :--------------------------------------------: |
-|       **and**       |                  逻辑运算符。                  |
-|       **as**        |                   创建别名。                   |
-|     **assert**      |                   用于调试。                   |
-|      **break**      |                   跳出循环。                   |
-|      **class**      |                    定义类。                    |
-|    **continue**     |             继续循环的下一个迭代。             |
-|       **def**       |                   定义函数。                   |
-|       **del**       |                   删除对象。                   |
-|      **elif**       |       在条件语句中使用，等同于 else if。       |
-|      **else**       |                 用于条件语句。                 |
-|     **except**      |          处理异常，发生异常时如何执行          |
-|      **False**      |       布尔值，比较运算的结果 False == 0        |
-|     **finally**     | 处理异常，无论是否存在异常，都将执行一段代码。 |
-|   **[for](#for)**   |                创建 for 循环。                 |
-|      **from**       |              导入模块的特定部分。              |
-|     **global**      |                 声明全局变量。                 |
-|    **[if](#if)**    |                写一个条件语句。                |
-|     **import**      |                   导入模块。                   |
-|       **in**        |     检查列表、元组等集合中是否存在某个值。     |
-|       **is**        |             测试两个变量是否相等。             |
-|     **lambda**      |                 创建匿名函数。                 |
-|      **None**       |                 表示 null 值。                 |
-|    **nonlocal**     |                声明非局部变量。                |
-|       **not**       |                  逻辑运算符。                  |
-|       **or**        |                  逻辑运算符。                  |
-|      **pass**       |       null 语句，一条什么都不做的语句。        |
-|      **raise**      |                   产生异常。                   |
-|     **return**      |               退出函数并返回值。               |
-|      **True**       |       布尔值，比较运算的结果。True == 1        |
-|       **try**       |            编写 try...except 语句。            |
-| **[while](#while)** |               创建 while 循环。                |
-|      **with**       |               用于简化异常处理。               |
-|      **yield**      |             结束函数，返回生成器。             |
+|        **关键字**         |                    **描述**                    |
+| :-----------------------: | :--------------------------------------------: |
+|          **and**          |                  逻辑运算符。                  |
+|          **as**           |                   创建别名。                   |
+|        **assert**         |                   用于调试。                   |
+|    **[break](#break)**    |                   跳出循环。                   |
+|         **class**         |                    定义类。                    |
+| **[continue](#continue)** |             继续循环的下一个迭代。             |
+|          **def**          |                   定义函数。                   |
+|          **del**          |                   删除对象。                   |
+|         **elif**          |       在条件语句中使用，等同于 else if。       |
+|     **[else](#else)**     |                 用于条件语句。                 |
+|        **except**         |          处理异常，发生异常时如何执行          |
+|         **False**         |       布尔值，比较运算的结果 False == 0        |
+|        **finally**        | 处理异常，无论是否存在异常，都将执行一段代码。 |
+|      **[for](#for)**      |                创建 for 循环。                 |
+|         **from**          |              导入模块的特定部分。              |
+|        **global**         |                 声明全局变量。                 |
+|       **[if](#if)**       |                写一个条件语句。                |
+|        **import**         |                   导入模块。                   |
+|          **in**           |     检查列表、元组等集合中是否存在某个值。     |
+|          **is**           |             测试两个变量是否相等。             |
+|        **lambda**         |                 创建匿名函数。                 |
+|         **None**          |                 表示 null 值。                 |
+|       **nonlocal**        |                声明非局部变量。                |
+|          **not**          |                  逻辑运算符。                  |
+|          **or**           |                  逻辑运算符。                  |
+|     **[pass](#pass)**     |       null 语句，一条什么都不做的语句。        |
+|         **raise**         |                   产生异常。                   |
+|        **return**         |               退出函数并返回值。               |
+|         **True**          |       布尔值，比较运算的结果。True == 1        |
+|          **try**          |            编写 try...except 语句。            |
+|    **[while](#while)**    |               创建 while 循环。                |
+|         **with**          |               用于简化异常处理。               |
+|         **yield**         |             结束函数，返回生成器。             |
 
 
 
@@ -1341,7 +1341,132 @@ expression_True if expression else expression_False
 
 
 
+## else
+
+while和for都可以配合else使⽤
+
+else下⽅缩进的代码含义：当循环正常结束后执⾏的代码
+
+
+
+
+
+
+
 ## while
+
+```python
+while True:
+    print('\n')
+# 会一直输出换行符
+# CTRL+C 来退出当前的无限循环
+```
+
+```python
+i = 1
+while i <= 9:
+    j = 1
+    while j <= i:
+        print(f'{j} * {j} = {j * i}', end='\t')
+        j += 1
+    print()
+    i += 1
+# 99乘法表
+```
+
+
+
+
+
+## break
+
+**break** 语句用于跳出当前循环体
+
+**break** 语句可以跳出 for 和 while 的循环体。如果你从 for 或 while 循环中终止，任何对应的循环 else 块将不执行
+
+break终⽌循环不会执⾏else下⽅缩进的代码
+
+```python
+i = 0
+while i <= 5:
+    i += 1
+    print(i, end)
+    if i == 3:
+        break
+# 1       2       3
+# 如果把break换成continue结果为
+# 1       2       3       4       5       6
+```
+
+```python
+while True:
+    while True:
+        print(1)
+        break
+# a(死循环)
+# 两层while, 每层都为真
+# 第2层为真执行print函数, 然后执行break
+# 但是结果却是一直执行print的死循环
+# 由此可以得知break不能跳出while嵌套
+```
+
+
+
+
+
+## continue
+
+**continue** 语句被用来告诉 Python 跳过当前循环块中的剩余语句，然后继续进行下一轮循环
+
+continue退出循环的⽅式执⾏else下⽅缩进的代码
+
+```python
+n = 0
+while n < 5:
+    if n == 3:
+        continue
+    print(n)
+    n += 1
+# 0
+# 1
+# 2
+# |(光标闪烁)
+# 这是一种错误的写法, 因为continue跳出本次循环并不执行后面的语句
+# while为真继续往下走, if为假跳过continue语句继续往下走,
+# 这时候输出n变量继续往下走, n += 1, 然后回到while判断, 如此循环
+# 如果n为3, while为真继续往下走, if为真执行continue语句跳过本次循环
+# 这时候需要注意的是跳过本次循环并不会往后执行语句,并不会执行print函数和n+1
+# 这时候continue跳过了本次循环, 并返回while, 这里是重点
+# 这时候n的值是3, while为真, 然后if为真, 然后跳过本次循环到while
+# while为真, if为真, 然后回到while, 如此是个死循环
+# 所以输出只有2, 因为print函数跟if是统一等级
+```
+
+
+
+```python
+n = 0
+while n < 5:
+    print(n)
+    if n == 3:
+        continue
+    n += 1
+# 3, 一直输出3, 死循环
+# 当n=3的时候, 执行continue跳过当前循环, 不执行n += 1 直接回到while
+# 然后print函数, 然后if为真, 然后while为真, 如此死循环
+```
+
+
+
+```python
+n = 0
+while n < 5:
+    n += 1
+    if n == 3:
+        continue
+    print(n, end='\t')
+# 1       2       4       5
+```
 
 
 
@@ -1353,29 +1478,33 @@ for循环可以遍历任何序列的项目，如一个列表或者一个字符�
 
 
 
+## pass
 
+Python pass是空语句，是为了保持程序结构的完整性。
+
+pass 不做任何事情，一般用做占位语句，如下实例
 
 
 
 # 内置函数
 
-|     **abs()**     |   **divmod()**    | **[input()](#input())** |       **open()**        | **staticmethod()**  |
-| :---------------: | :---------------: | :---------------------: | :---------------------: | :-----------------: |
-|     **all()**     |  **enumerate()**  |        **int()**        |        **ord()**        |      **str()**      |
-|     **any()**     |    **eval()**     |    **isinstance()**     |        **pow()**        |      **sum()**      |
-| **basestring()**  |  **execfile()**   |    **issubclass()**     | **[print()](#print())** |     **super()**     |
-|     **bin()**     |    **file()**     |       **iter()**        |     **property()**      |     **tuple()**     |
-|    **bool()**     |   **filter()**    |        **len()**        | **[range()](#range())** |     **type()**      |
-|  **bytearray()**  |    **float()**    |       **list()**        |     **raw_input()**     |    **unichr()**     |
-|  **callable()**   |   **format()**    |      **locals()**       |      **reduce()**       |    **unicode()**    |
-|     **chr()**     |  **frozenset()**  |       **long()**        |      **reload()**       |     **vars()**      |
-| **classmethod()** |   **getattr()**   |        **map()**        |       **repr()**        |    **xrange()**     |
-|     **cmp()**     |   **globals()**   |        **max()**        |      **reverse()**      |      **zip()**      |
-|   **compile()**   |   **hasattr()**   |    **memoryview()**     |       **round()**       |    **import()**     |
-|   **complex()**   |    **hash()**     |        **min()**        |   **[set()](#set())**   | **exec 内置表达式** |
-|   **delattr()**   |    **help()**     |       **next()**        |      **setattr()**      |                     |
-|    **dict()**     |     **hex()**     |      **object()**       |       **slice()**       |                     |
-|     **dir()**     | **[id()](#id())** |        **oct()**        |      **sorted()**       |                     |
+|     **abs()**     |    **divmod()**     | **[input()](#input())** |       **open()**        | **staticmethod()**  |
+| :---------------: | :-----------------: | :---------------------: | :---------------------: | :-----------------: |
+|     **all()**     |   **enumerate()**   |        **int()**        |        **ord()**        |      **str()**      |
+|     **any()**     |     **eval()**      |    **isinstance()**     |        **pow()**        |      **sum()**      |
+| **basestring()**  |   **execfile()**    |    **issubclass()**     | **[print()](#print())** |     **super()**     |
+|     **bin()**     |     **file()**      |       **iter()**        |     **property()**      |     **tuple()**     |
+|    **bool()**     |    **filter()**     |        **len()**        | **[range()](#range())** |     **type()**      |
+|  **bytearray()**  |     **float()**     |       **list()**        |     **raw_input()**     |    **unichr()**     |
+|  **callable()**   |    **format()**     |      **locals()**       |      **reduce()**       |    **unicode()**    |
+|     **chr()**     |   **frozenset()**   |       **long()**        |      **reload()**       |     **vars()**      |
+| **classmethod()** |    **getattr()**    |        **map()**        |       **repr()**        |    **xrange()**     |
+|     **cmp()**     |    **globals()**    |        **max()**        |      **reverse()**      |      **zip()**      |
+|   **compile()**   |    **hasattr()**    |    **memoryview()**     |       **round()**       |    **import()**     |
+|   **complex()**   |     **hash()**      |        **min()**        |   **[set()](#set())**   | **exec 内置表达式** |
+|   **delattr()**   | **[help()](#help)** |       **next()**        |      **setattr()**      |                     |
+|    **dict()**     |      **hex()**      |      **object()**       |       **slice()**       |                     |
+|     **dir()**     |  **[id()](#id())**  |        **oct()**        |      **sorted()**       |                     |
 
 
 
@@ -1398,6 +1527,12 @@ for i in range(0, 5):
 ```
 
 
+
+### VT100
+
+VT100是一个终端类型定义,VT100控制码是用来在终端扩展显示的代码。比如果终端上任意坐标用不同的颜色显示字符。
+
+所有的控制符是**\033**开头的, 即 ESC 的 8进制 ASCII 码
 
 
 
@@ -1457,6 +1592,30 @@ for i in range(0, 15, 3):
 # 9
 # 12
 ```
+
+
+
+## help()
+
+显示帮助信息
+
+使用的时候要把括号去掉
+
+```python
+help(bytes)
+# Help on class bytes in module builtins:
+# bytes 是一个类
+```
+
+```python
+help(open)
+# Help on built-in function open in module io:
+# open是i个内置函数
+```
+
+
+
+
 
 
 
@@ -1896,6 +2055,103 @@ is 与 == 区别：
 is 用于判断两个变量引用对象是否为同一个， == 用于判断引用变量的值是否相等
 
 
+
+
+
+# pyenv
+
+https://github.com/pyenv/pyenv
+
+
+
+**pyenv**是一个**python多版本管理工具**，当服务器上存在不同版本的python项目时，使用pyenv可以做到多版本的隔离使用(类似虚拟化)，每个项目使用不同版本互不影响。
+
+
+
+```bash
+dnf install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel libpcap-devel xz-devel -y
+# 常见依赖包的问题
+```
+
+```bash
+git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+# 使用git clone下载安装到家目录的.pyenv目录
+```
+
+```bash
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> /etc/profile
+echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> /etc/profile
+su -
+# 设置环境变量,并使之生效,这样才能直接使用pyenv命令
+```
+
+```python
+pyenv install -l
+# --或者使用pyenv install --list列出所有的python当前可用版本
+```
+
+```sh
+pyenv versions
+# 查看当前安装的版本,前面带*号的是默认使用的版本
+```
+
+
+
+
+
+## pyenv-virtualenv
+
+https://github.com/pyenv/pyenv-virtualenv
+
+
+
+**pyenv-virtualenv**是pyenv的插件，为pyenv设置的python版本提供隔离的虚拟环境。不同版本的python在不同的虚拟环境里使用互不影响
+
+
+
+```sh
+git clone https://github.com/pyenv/pyenv-virtualenv.git $PYENV_ROOT/plugins/pyenv-virtualenv
+# 将pyenv-virtualenv插件复制到pyenv根目录下的plugins下
+```
+
+```sh
+pyenv virtualenv 3.6.6  py36
+# 把安装的3.6.6版本做一个隔离的虚拟化环境，取名为py36(这个取名是自定义的)
+```
+
+```python
+pyenv activate py36
+# 激活环境
+```
+
+```sh
+echo 'eval "$(pyenv init -)"' >> /etc/profile
+echo 'eval "$(pyenv virtualenv-init -)"' >> /etc/profile
+su -
+# 如果报错, 输入以上命令解决
+# Failed to activate virtualenv.
+# Perhaps pyenv-virtualenv has not been loaded into your shell properly.
+# Please restart current shell and try again.
+```
+
+
+
+
+
+```sh
+pyenv uninstall py36
+# 删除创建的隔离环境
+```
+
+
+
+
+
+
+
+
+
+# pypi
 
 
 
