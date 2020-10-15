@@ -248,7 +248,7 @@ echo DONE
 
 
 
-
+# 在 mars.lab.example.com 上执行以下任务
 
 
 
@@ -417,14 +417,364 @@ useradd sarah -s /sbin/nologin
 
 
 
-
-
 ```sh
 echo redhat | passwd -- stdin natasha
 echo redhat | passwd -- stdin harry
 echo redhat | passwd -- stdin sarah
 # 设置 natasha, harry, sarah 的密码
 ```
+
+
+
+
+
+# 5. 配置 cron 作业
+
+用户natasha 配置一个 cron 作业, 该作业每天 14:23 运行并执行 /binecho hiya
+
+
+
+```sh
+crontab -e -u natasha
+```
+
+```sh
+23 14 * * * /bin/echo hiya
+# 分 时 日 月 周
+```
+
+
+
+
+
+
+
+# 6. 创建协作目录
+
+创建具有以下特真正的协作目录 /home/managers
+
+- /home/managers 的组所有权是 sysmgrs
+- 目录可被 sysmgrs 组的成员读写访问, 但是其他任何用户不具这些权限(root除外)
+- /home/managers 中创建的文件自动将组所有权设置到 sysmgrs组
+
+
+
+```sh
+mkdir /home/managers
+```
+
+
+
+```sh
+chgrp sysadms /home/managers
+```
+
+
+
+```sh
+chmod 2770 /home/managers
+```
+
+
+
+
+
+# 7. 配置 NTP
+
+配置系统, 使其成为
+
+classroom.example.com
+
+的 NTP 客户端
+
+
+
+考试时提示:
+
+classroom.example.com 是 sidecar.lab.example.com 的 DNS 别名
+
+
+
+```sh
+vi /etc/chrony.conf
+```
+
+```sh
+server    classroom.exmple.com    iburst
+```
+
+
+
+```sh
+systemctl restart chronyd
+```
+
+```sh
+chronyc sources -v
+# sidecar.lab.example.com
+# 如果配置正确则会看到以上信息
+```
+
+
+
+
+
+# 8. 配置 autofs
+
+按照以下所述自动挂载远程用户的主目录
+
+- classroom.example.com(172.25.254.254)NFS 导出 /rhome 到系统, 此文件系统包含为用户 laoma 预配置的主目录
+- laoma 的目录是 classroom.example.com:/rhome/laoma
+- laoma 的主目录应自动挂载到本地 /rhome 下的 /rhome/laoma
+- 主目录必须可供用户写入
+
+
+
+```sh
+yum install -y autofs
+```
+
+
+
+```
+vi /etc/auto.master.d/netdir.autofs
+```
+
+```sh
+/rhome    /etc/auto.netdir
+```
+
+
+
+```sh
+cp /etc/auto.misc /etc/auto.netdir
+```
+
+
+
+```sh
+vi /etc/auto.netdir
+```
+
+```sh
+laoma -fstype=nfs,rw,sync classroom.example.com:/rhome/laoma
+```
+
+
+
+```sh
+systemctl enable --now autofs
+```
+
+
+
+```sh
+ssh laoma@mars.lab.example.com
+```
+
+
+
+
+
+# 9. 配置 /var/tmp/fstab 权限
+
+将文件 /etc/fstab 复制到 /var/tmp/fstab
+
+配置 /var/tmp/fstab 的权限以满足以下条件
+
+- /var/tmp/fstab 由 root 用户所有
+- /var/tmp/fstab 属于 root 组
+- /var/tmp/fstab 不能被任何人执行
+- 用户 natasha 能够读取和写入 /var/tmp/fstab
+- 用户 harry 无法写入读取 /var/tmp/fstab
+- 所有其他用户能够读取 /var/tmp/fstab
+
+
+
+```sh
+cp /etc/fstab /var/tmp
+```
+
+
+
+```sh
+setfacl -m u:natasha:rw, u:harry:-, o:r /var/tmp/fstab
+```
+
+
+
+
+
+# 10. 配置用户账户
+
+配置用户 laoniu
+
+- id为: 3533
+- 密码为: redhat
+
+
+
+```sh
+usermod -u 3533 laoniu
+```
+
+
+
+```sh
+echo redhat | passwd --stdin laoniu
+```
+
+
+
+
+
+# 11. 查找文件
+
+查找用户 jacques 所有的文件并将其 副本 放入 /root/findfiles
+
+
+
+```sh
+mkdir /root/findfiles
+```
+
+
+
+```sh
+find / -user jacques -exec cp -apr {} /root/findfiles \;
+```
+
+
+
+
+
+# 12. 查找字符串
+
+- 查找 /usr/share/doc/words/readme.txt 中包含 crosswords 所有的行
+- 将所有这些行的副本按照原始顺序放入 /root/list
+- /root/list 不得包含空行
+- 且所有的行必须是 /usr/share/doc/words/readme.txt 中的原始行
+
+
+
+```sh
+grep crosswords /usr/share/doc/words/readme.txt > /root/list
+```
+
+
+
+
+
+# 13. 创建存档
+
+- 创建一个名为 /root/backup.tar.gz 的 tar 存档
+- 存档应包含 /usr/local 的内容
+- 该 tar 存档必须使用 gzip 压缩
+
+
+
+```sh
+tar cvzf /root/backup.tar.gz /usr/local
+```
+
+
+
+
+
+
+
+---
+
+# 在 venus.lab.example.com 上执行以下任务
+
+
+
+
+
+# 1. 设置 root 密码
+
+- 将 venus 的 root 用户密码 设置为 redhat
+- 必须获得系统的访问权限才能进行此操作
+- 当前的 root 的密码并不知道
+
+
+
+```sh
+在 bootloader 界面 按 e
+```
+
+```sh
+在 linux 开头的行, 末尾加入 "console=tty0 rd.break"
+```
+
+
+
+```sh
+mount -o rw,remount /sysroot
+# 当前系统并没有引导到 linux
+```
+
+```sh
+chroot /sysroot
+```
+
+```sh
+echo redhat | passwd --stdin root
+```
+
+```sh
+touch /.autorelabel
+```
+
+```sh
+exit && exit
+```
+
+
+
+
+
+# 2. 配置系统以使用默认存储库
+
+YUM 存储库已经可以从以下地址使用
+
+http://content.example.com/rhel8.0/x86_64/dvd/BaseOS
+
+http://content.exmple.com/rhel8.0/x86_64/dev/AppStream
+
+将这些位置用作默认存储库
+
+
+
+
+
+```bash
+vim /etc/yum.repos.d/rhel80.repo
+```
+
+```bash
+[BaseOS]
+name=BaseOS
+baseurl=http://content.example.com/rhel8.0/x86_64/dvd/BaseOS
+enabled=1
+gpgcheck=0
+
+[AppStream]
+name=AppStream
+baseurl=http://content.exmple.com/rhel8.0/x86_64/dev/AppStream
+enabled=1
+gpgcheck=0
+```
+
+
+
+
+
+# 3. 设置逻辑卷大小
+
+将逻辑卷 laomalv 
+
+
 
 
 
