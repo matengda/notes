@@ -1,8 +1,39 @@
+# dns
+
 ```
 /etc/resolv.conf
 
 nameserver 8.8.8.8 # 设置dns服务器地址
 ```
+
+
+
+# 模块
+
+
+
+
+
+## bbr
+
+```sh
+echo 'net.ipv4.tcp_congestion_control=bbr' >> /etc/sysctl.conf && sysctl -p
+# 临时开启bbr
+```
+
+
+
+
+
+
+
+
+
+# link
+
+ftp://ftp.redhat.com
+
+redhat 二进制包
 
 
 
@@ -181,11 +212,16 @@ neovim.io
 Bram Moolenaar 在写 Vim 时还是 90 年代初，至今已经 20 多年 过去了。其中，不仅包含了大量的遗留代码，而且程序的维护、Bug 的 修复、以及新特性的添加都变得越来越困难。为了解决这些问题，Neovim 项目应运而生。Neo 即“新”之意，它是 Vim 在这个新时代的重生。
 根据 Neovim 的自述说明，在总体上，它将达到下列目的：
 
-    - 通过简化维护以改进 Bug 修复及特性添加的速度；
-    - 分派各个开发人员的工作；
-    - 实现新的、现代化的用户界面，而不必修改核心源代码；
-    - 利用新的、基于协同进程的新插件架构改善扩展性，并支持使用任何语言 编写插件
-Neovim是Vim的一个重构版本，致力于成为Vim的超集（superset）。Neovim和Vim配置文件采用相同的语法，所以Vim的配置文件也可以用于Neovim。Neovim的第一个版本在2015年12月发行，并且能够完全兼容Vim的特性
+  - 通过简化维护以改进 Bug 修复及特性添加的速度；
+
+  - 分派各个开发人员的工作；
+
+  - 实现新的、现代化的用户界面，而不必修改核心源代码；
+
+  - 利用新的、基于协同进程的新插件架构改善扩展性，并支持使用任何语言 编写插件
+  Neovim是Vim的一个重构版本，致力于成为Vim的超集（superset）。Neovim和Vim配置文件采用相同的语法，所以Vim的配置文件也可以用于Neovim。Neovim的第一个版本在2015年12月发行，并且能够完全兼容Vim的特性
+
+  
 
 jekyllrb.com
 静态博客网站生成器
@@ -519,17 +555,6 @@ CN2 GIA：中国电信 CN2 GIA，属于 CN2 中的 Global Internet Access 产品
 CN2 GIA 和普通 CN2 如何选择
 电信用户: CN2 GIA比普通CN2更加稳定,尤其是晚上的时候
 联通和移动: 如果想体验 CN2，那么只有买 CN2 GIA 才行
-
-
-
-```bash
-echo 'net.ipv4.tcp_congestion_control=bbr' >> /etc/sysctl.conf && sysctl -p 
-# 临时开启bbr
-```
-
-```bash
-sysctl -p # 默认从/etc/sysctl.conf 加载sysctl设置, 配置内核参数
-```
 
 
 

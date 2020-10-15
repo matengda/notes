@@ -1353,6 +1353,17 @@ while和for都可以配合else使⽤
 
 else下⽅缩进的代码含义：当循环正常结束后执⾏的代码
 
+```python
+while False:
+    print('a')
+else:
+    print('b')
+# b
+# 在 while … else 在条件语句为 false 时执行 else 的语句块
+```
+
+
+
 
 
 
@@ -1480,7 +1491,15 @@ while n < 5:
 
 ## for
 
-for循环可以遍历任何序列的项目，如一个列表或者一个字符串
+for循环可以遍历任何序列的项目，如一个列表或者一个字符串`
+
+```python
+for i in abc:
+    print(i)
+# a       b       c
+```
+
+
 
 
 
@@ -2124,6 +2143,18 @@ list = 'abc'
 **is 用于判断两个变量引用对象是否为同一个， == 用于判断引用变量的值是否相等**
 
 
+
+# edu
+
+https://docs.python.org/zh-cn/3.9/
+
+
+
+https://www.runoob.com/python3/python3-tutorial.html
+
+
+
+https://www.liaoxuefeng.com/wiki/1016959663602400
 
 
 
