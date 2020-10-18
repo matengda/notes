@@ -4,7 +4,7 @@
 
 
 
-除了使用的物理台式机外, 还会使用多个虚拟系统, 虚拟机具有root权限, 物理机没有root权限
+除了使用的物理台式机外, 还会使用多个虚拟系统, 虚拟机具有root权限, 但物理机没有root权限
 
 
 
@@ -25,9 +25,9 @@
 
 - 练习题都是在 **mars.lab.example.com** 上执行的
 
-- | **mars**  |  **火星**  |
+- | **venus** |  **金星**  |
   | :-------: | :--------: |
-  | **venus** |  **金星**  |
+  | **mars**  |  **火星**  |
   |  **lab**  | **实验室** |
 
 
@@ -710,7 +710,7 @@ tar cvzf /root/backup.tar.gz /usr/local
 
 
 ```sh
-mount -o rw,remount /sysroot
+mount -o remount,rw /sysroot
 # 当前系统并没有引导到 linux
 ```
 
@@ -740,7 +740,7 @@ YUM 存储库已经可以从以下地址使用
 
 http://content.example.com/rhel8.0/x86_64/dvd/BaseOS
 
-http://content.exmple.com/rhel8.0/x86_64/dev/AppStream
+http://content.example.com/rhel8.0/x86_64/dvd/AppStream
 
 将这些位置用作默认存储库
 
@@ -761,7 +761,7 @@ gpgcheck=0
 
 [AppStream]
 name=AppStream
-baseurl=http://content.exmple.com/rhel8.0/x86_64/dev/AppStream
+baseurl=http://content.example.com/rhel8.0/x86_64/dvd/AppStream
 enabled=1
 gpgcheck=0
 ```
@@ -772,9 +772,226 @@ gpgcheck=0
 
 # 3. 设置逻辑卷大小
 
-将逻辑卷 laomalv 
+- 将逻辑卷 laomalv 及其文件系统的大小调整到 230M
+- 确保文件系统内容保持不变
+- 分区大小与请求的大小完全相同, 因此范围是 217 - 243M
 
 
+
+```sh
+lvresize -rL 230M /dev/mapper/laomavg-laomalv
+```
+
+
+
+
+
+# 4. 添加交换分区
+
+- 向系统添加一个额外的交换分区, 大小为 756M
+- 交换分区应在系统启动时自动挂载
+- **不要删除或以任何方式改动系统上的任何现有交换分区**
+
+
+
+```sh
+fdisk /dev/vdb
+# 创建一个分区, 分区容量通过 +1548288 sectors 数量指定(756x1024x2)
+# 分区类型为 82
+```
+
+```
+
+```
+
+
+
+```sh
+mkswap /dev/vdb3
+```
+
+
+
+```sh
+vi /etc/fstab
+```
+
+```sh
+/dev/vdb3    swap    swap    defaults    0    0
+```
+
+
+
+```sh
+swapon -a
+```
+
+```sh
+swapon -s
+```
+
+
+
+
+
+# 5. 创建逻辑卷
+
+- 创建一个逻辑卷
+- 逻辑卷名为qa, 属于 qagroup 卷组, 大小为 60 个扩展块
+- qagroup 卷组中的逻辑卷的扩展块大小为 16M
+- 使用 ext3 格式化新逻辑卷
+- 逻辑卷在系统启动时自动挂载到 /mnt/qa
+
+
+
+```sh
+fdisk /dev/vdb
+# 将 /dev/vdb 所有的剩余空间分配给 扩展分区/dev/vdb4
+# 在扩展分区中创建一个容量为 1G 的分区 /dev/vdb5, 类型为 8e
+```
+
+```sh
+
+```
+
+
+
+```sh
+udevadm settle
+# 如果内科更新失败, 重启系统后继续
+```
+
+
+
+```sh
+vgcreate -s 16M qagroup /dev/vdb5
+```
+
+
+
+```sh
+lvcreate -n qa -l 60 qagroup
+```
+
+
+
+```sh
+mkdir /mnt/qa
+# 也可以使用 UUID 挂载
+```
+
+
+
+```
+vi /etc/fstab
+```
+
+```sh
+/dev/qagroup/qa    /mnt/qa    ext3    defaults    0 0
+```
+
+
+
+```sh
+mount -a
+```
+
+```sh
+df
+```
+
+
+
+
+
+# 6. 创建 VDO 卷
+
+- 创建一个新的 VDO 卷
+- 使用未分区的磁盘
+- 改卷的名称为 vdough
+- 改卷的逻辑大小为 50G
+- 改卷使用 xfs 文件系统格式化
+- 在系统启动时, 改卷自动挂载到 /vbread 下
+
+
+
+```sh
+dnf install vdo kmod-kvdo
+```
+
+
+
+```sh
+systemctl enable vdo --now
+```
+
+
+
+```sh
+vdo create --name=vdough --device=/dev/vdc --vdoLogicalSize=50G
+```
+
+
+
+```sh
+mkfs.xfs -k /dev/mapper/vdough
+```
+
+
+
+```sh
+mkdir /vbread
+```
+
+
+
+```sh
+vim /etc/fstab
+```
+
+```sh
+/dev/mapper/vdough    /vbread    xfs    defaults,x-systemd.requires=vdo.service    0 0
+```
+
+
+
+```sh
+mount -a
+```
+
+
+
+```sh
+df
+```
+
+
+
+
+
+# 7. 配置系统调优
+
+- 选择 tuned 配置集, 并将它设为默认设置
+
+
+
+```sh
+tuned-adm recommend
+# virtual-guest
+```
+
+
+
+```sh
+tuned-adm profile virtual-guest
+```
+
+
+
+```sh
+tuned-adm active
+# Current active profile: virtual-guest
+```
 
 
 
@@ -784,12 +1001,16 @@ gpgcheck=0
 
 # 评分脚本
 
+**必须在mars上做第一道题, 否则脚本会卡死**
+
+
+
 ```bash
-# 以下是是 test-rhcsa8.sh 文件
-# 直接执行即可得分
+# rhcsa8.sh
+# 将 rhcsa8.sh 文件上传到 kiosk 家目录, 并执行
+
 
 #!/bin/bash
-
 function wait_ssh {
 WAITIME=0
 while true; do
@@ -1124,11 +1345,15 @@ echo "*************************************************"
 
 # 环境
 
-链接: https://pan.baidu.com/s/1leLa__r0fdteKZrvqX8T0g 
+链接: https://pan.baidu.com/s/1wA7rabTot5P68tvd3uivFg
 
-提取码: pii8
+提取码: iddx
 
 虚拟机密码: redhat
+
+
+
+此环境是马老师的 2020年9月份的环境
 
 
 

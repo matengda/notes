@@ -1,3 +1,50 @@
+# 考试环境信息
+
+总分为300分, 210分及以上合格
+
+
+
+除了使用的物理台式机外, 还会使用多个虚拟系统, 虚拟机具有root权限, 但物理机没有root权限
+
+
+
+# 虚拟系统
+
+|            **系统**             |    **IP 地址**     |         **角色**         |
+| :-----------------------------: | :----------------: | :----------------------: |
+|   **bastion.lab.example.com**   | **172.25.250.254** | **Ansible bastion node** |
+|   **servera.lab.example.com**   | **172.25.250.10**  | **Ansible managed node** |
+|   **serverb.lab.example.com**   | **172.25.250.11**  | **Ansible managed node** |
+|   **serverc.lab.example.com**   | **172.25.250.12**  | **Ansible managed node** |
+|   **serverd.lab.example.com**   | **172.25.250.13**  | **Ansible managed node** |
+| **workstation.lab.example.com** |  **172.25.250.9**  | **Ansible managed node** |
+
+- |   **bastion**   |  **堡垒**  |
+  | :-------------: | :--------: |
+  | **workstation** | **工作站** |
+  |    **node**     |  **节点**  |
+  |   **managed**   |  **管理**  |
+
+- 这些系统的 IP 地址采用静态
+- **请勿更改这些设置**
+- 主机名称解析已配置为解析上方列出的完全限定主机名, 同时也解析短名称
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # 初始化环境
 
 
@@ -81,17 +128,17 @@ echo "DONE"
 
 # 评分脚本
 
-有两个文件 `grade.sh` 和 `test-rhce8.sh`
+有两个文件 `grade.sh` 和 `exam-rhce8.sh`
 
-执行test-rhce8.sh文件即可得分
+执行exam-rhce8.sh文件即可得分
 
 
 
 ```bash
-# 一下是 grade.sh 文件
+# 以下是 grade.sh
+
 
 #!/bin/bash
-
 #定义函数
 function print_PASS () {
   echo -e '\033[1;32m正确\033[0;39m'
@@ -671,11 +718,25 @@ echo "****************************************************"
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ```bash
-# 以下是 test-rhce8.sh 文件
+# 以下是 exam-rhce8.sh
+
 
 #!/bin/bash
-
 function wait_ssh {
 WAITIME=0
 while true; do

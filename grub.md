@@ -12,3 +12,9 @@ chainloader (hd0,gpt1)/efi/Microsoft/Boot/bootmgfw.efi
 boot
 ```
 
+
+
+
+
+忘记密码
+
