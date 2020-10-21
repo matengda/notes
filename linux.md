@@ -1,3 +1,45 @@
+# 忘记root密码,grub并加密
+
+此方法建立在磁盘不能加密的基础上
+
+
+
+从光盘启动, 选择 Troubleshooting -> Rescue a CentOS Linux system
+
+```
+Rescue
+
+The rescue environment will now attempt to find your Linux installation and mount it under the directory : /mnt/sysimage. You can the make any changes required to your system. Choose '1' to proceed with this step.
+You can choose to mount your file systems read-only instead of read-write by choosing '2'.
+if for some reason this process does not work choose '3' to skip directly to a shell.
+
+1) Continue
+2) Read-only mount
+3) Skip to shell
+4) Quit (Reboot)
+
+Please make a selection from the above: 
+# 选择 1
+```
+
+
+
+```sh
+Rescue Shell
+
+Your system has been mounted under /mnt/sysimage.
+
+If you would like to make the root of your system the root of the active system, run the command:
+        chroot /mnt/sysimage
+When finished, please exit from the shell and your system will reboot.
+Please press ENTER to get a shell: sh-4.4# 
+# RET
+```
+
+
+
+
+
 # dns
 
 ```
@@ -219,7 +261,7 @@ Bram Moolenaar 在写 Vim 时还是 90 年代初，至今已经 20 多年 过去
   - 实现新的、现代化的用户界面，而不必修改核心源代码；
 
   - 利用新的、基于协同进程的新插件架构改善扩展性，并支持使用任何语言 编写插件
-  Neovim是Vim的一个重构版本，致力于成为Vim的超集（superset）。Neovim和Vim配置文件采用相同的语法，所以Vim的配置文件也可以用于Neovim。Neovim的第一个版本在2015年12月发行，并且能够完全兼容Vim的特性
+    Neovim是Vim的一个重构版本，致力于成为Vim的超集（superset）。Neovim和Vim配置文件采用相同的语法，所以Vim的配置文件也可以用于Neovim。Neovim的第一个版本在2015年12月发行，并且能够完全兼容Vim的特性
 
   
 

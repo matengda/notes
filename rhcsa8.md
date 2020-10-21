@@ -43,7 +43,7 @@ http://content.exmple.com/rhel8.0/x86_64/dev/AppStream
 ## 重要信息
 
 - 虚拟系统会在重新引导后进行评测
-- **务必确保所有更改在虚拟机重启后人有保留**
+- **务必确保所有更改在虚拟机重启后仍有保留**
 - 服务必须在没有人工干预的情况下启动
 - **无法引导, 无法在无人工干预引导的系统上完成的所有造作都将判定为0分**
 
@@ -80,6 +80,14 @@ Usage: rht-vmctl [-y|--yes] VMCMD VMNAME [DATETIME]
   -y|--yes     - confirm nothing, just do it
 
   VMNAME of "all" processes all VMs available in the course
+```
+
+
+
+```sh
+rht-vmctl stop all
+# 停止所有的虚拟机
+# 经测试发现此命令显示已经全部停止, 但是 virt-manager 却显示有的正在运行
 ```
 
 
@@ -270,19 +278,18 @@ echo DONE
 
 - dns服务器 172.25.250.254
 
-
-
-
+  
 
 ```bash
-  nmcli connection modify 'Wired connection 1' ipv4.method manual ipv4.address 172.25.250.10/24 ipv4.gateway 172.25.0.254 ipv4.dns 172.25.250.254
-  # ipv4.method manual 更改ip获取方式为手动
-  # connection.autoconnect yes 自动连接
-  # W 大写
+nmcli connection modify 'Wired connection 1' ipv4.method manual ipv4.address 172.25.250.10/24 ipv4.gateway 172.25.0.254 ipv4.dns 172.25.250.254
+# ipv4.method manual 更改ip获取方式为手动
+# connection.autoconnect yes 自动连接
+# W 大写
 ```
   ```bash
-  nmcli connection up 'Wired connection 1'
-  # 设置完必须输入此命令以激活新的配置
+nmcli connection up 'Wired connection 1'
+# 如果不输入此命令那么不会激活新的配置
+# 因为后续会重启, 所以这条命令输入不输入都可以
   ```
 
 
@@ -699,23 +706,32 @@ tar cvzf /root/backup.tar.gz /usr/local
 
 
 
+
+
+在启动的时候按e, 编辑启动选项
+
 ```sh
-在 bootloader 界面 按 e
+console=tty0 rd.break
+# 在 linux 开头的行, 末尾加入如上
+# 通过向内核添加 rd.break 参数来以单用户模式启动
+# C-x 启动进入 switch_root
 ```
 
 ```sh
-在 linux 开头的行, 末尾加入 "console=tty0 rd.break"
+mount
+# dev/vda1 on /sysroot type xfs (ro,relatime,attr2,inode64,noquota)
+# 通过命令可以得知vda1挂载到了/sysroot, 只读挂载
+# ro=readonly
 ```
-
-
 
 ```sh
 mount -o remount,rw /sysroot
-# 当前系统并没有引导到 linux
+# 读写模式挂载
 ```
 
 ```sh
 chroot /sysroot
+# 改变系统根分区
 ```
 
 ```sh
@@ -724,11 +740,17 @@ echo redhat | passwd --stdin root
 
 ```sh
 touch /.autorelabel
+# 默认使用 SELinux，因此创建下面的隐藏文件，这个文件会在下一次启动时重新标记所有文件
 ```
 
 ```sh
-exit && exit
+C-d C-d
+# 重新启动
 ```
+
+
+
+
 
 
 
@@ -978,7 +1000,14 @@ df
 ```sh
 tuned-adm recommend
 # virtual-guest
+# recommend 推荐的意思
 ```
+
+- RHEL在 6.3 版本以后引入了一套新的系统调优工具 tuned/tuned-adm
+- tuned 是服务端程序，用来监控和收集系统各个组件的数据，并依据数据提供的信息动态调整系统设置，达到动态优化系统的目的
+- tuned-adm 是客户端程序，用来和 tuned 打交道
+
+
 
 
 

@@ -195,9 +195,13 @@
 
 
 
-# cpu
 
-**寄存器**
+
+# 寄存器
+
+寄存器是CPU内部用来存放数据的一些小型存储区域，用来暂时存放参与运算的数据和运算结果以及一些CPU运行需要的信息
+
+
 
 > 寄存器就是CPU直接拿他里面寄存的东西直接来进行计算操作的，它就是CPU的一部分。寄存器是有限存贮容量的高速存贮部件，它们可用来暂存指令、数据和位址。在中央处理器的控制部件中，包含的寄存器有指令寄存器(IR)和程序计数器(PC)。在中央处理器的算术及逻辑部件中，包含的寄存器有累加器(ACC)
 
@@ -210,7 +214,9 @@
 - 寄存器包含1级缓存, 2级缓存, 3级缓存(将来可能会有更多级别的缓存)
 - 寄存器数据来源于内存, cpu <--> 寄存器 <<--> 内存(cpu只和寄存器读写)
 
-**缓存**
+
+
+# 缓存
 
 > 缓存就是为了避免数据的多次从一个地方拿到另一个地方，从而在中间通过其中的一个划分一块区域作为临时存放数据地址，以便下次取用方便的说法。比如：寄存器拿出临时寄存的地方，它是位于寄存器和内存之间，相当于一个中间枢纽。但是他的位置就是在寄存器之中，只是把寄存器划分出来一个文件交换区，用来存在最常使用的一些数据。在比如内存从硬盘拿出一些东西放到内存的某块区域，把内存这块区域也叫做缓存，大家一定一定记得不要理解成缓存就是某一个啥东西，它只是说明了数据中转的一种方式而已。而一部分人说的缓存说的是高速缓存，那个是两个不同的概念，这个高速缓存其实是CPU里面的一部分，它集成于CPU中，大家理解就是运行速度更快的一种内存，CPU每次直接拿来操作，不会经过内存和寄存器的过程，现在说的都是L1 cache一级缓存，之前早起的L2 cache焊接在主板上。
 
@@ -227,6 +233,10 @@
 - 1级缓存速度明显高于2级缓存, 以此类推, 有多级缓存是为了经济考虑
 
     cpu <--> 寄存器 << --> 缓存 <--> 内存(cpu只和寄存器读写)
+
+
+
+
 
 # 内联汇编
 
@@ -263,7 +273,12 @@ main(void)
 }
 ```
 
+
+
+
+
 # 关键字
+
 **这是 C 中保留的关键字列表。因为语言使用这些关键字，故不可重定义它们**
 
 |           [auto](#auto)            |         [break](#break)          |               [case](#case)                |              [char](#char)               |
@@ -315,13 +330,7 @@ main(void)
 
 
 
-# 标准库
 
-- [freebsd](https://svnweb.freebsd.org/base/head/lib/libc/)
-- [openbsd](http://cvsweb.openbsd.org/cgi-bin/cvsweb/src/lib/libc/)
-- [netbsd](http://cvsweb.netbsd.org/bsdweb.cgi/src/lib/libc/)
-- [glibc](https://sourceware.org/git/?p=glibc.git;a=tree)
-- [ulibc](https://git.uclibc.org/uClibc/tree/libc)
 
 
 # 标准库头文件
@@ -467,6 +476,18 @@ main(void){
 
 
 
+
+
+
+
+
+# 标准库
+
+- [freebsd](https://svnweb.freebsd.org/base/head/lib/libc/)
+- [openbsd](http://cvsweb.openbsd.org/cgi-bin/cvsweb/src/lib/libc/)
+- [netbsd](http://cvsweb.netbsd.org/bsdweb.cgi/src/lib/libc/)
+- [glibc](https://sourceware.org/git/?p=glibc.git;a=tree)
+- [ulibc](https://git.uclibc.org/uClibc/tree/libc)
 
 
 

@@ -175,7 +175,22 @@ dnf update -y && dnf install perl -y
 
 
 
+
+
+
+
+扩展vmdk磁盘容量
+
 ```powershell
-vmware-vdiskmanager -x 100G fileName.vmdk # 扩展vmdk磁盘容量
+vmware-vdiskmanager -x 100G fileName.vmdk
 ```
 
+
+
+
+
+
+
+启动时进入bios
+
+虚拟机 -> 电源 -> 打开电源时进入固件(F)
