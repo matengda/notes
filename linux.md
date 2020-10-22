@@ -40,6 +40,24 @@ Please press ENTER to get a shell: sh-4.4#
 
 
 
+# /proc
+
+```sh
+echo 1 > /proc/sys/vm/drop_caches
+# 释放内存
+```
+
+
+
+```sh
+echo 3 > /proc/sys/vm/drop_caches
+# 释放缓存
+```
+
+
+
+
+
 # dns
 
 ```

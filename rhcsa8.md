@@ -289,7 +289,6 @@ nmcli connection modify 'Wired connection 1' ipv4.method manual ipv4.address 172
   ```bash
 nmcli connection up 'Wired connection 1'
 # 如果不输入此命令那么不会激活新的配置
-# 因为后续会重启, 所以这条命令输入不输入都可以
   ```
 
 
@@ -337,11 +336,8 @@ gpgcheck=0
 根据需要调试解决问题, 并满足以下条件
 
 - 系统上的 Web 服务器能够提供 /var/www/html 中所有的 HTML 文件
-
-  不得删除或以其他方式改变现有的文件内容
-
+- 不得删除或以其他方式改变现有的文件内容
 - Web 服务器在端口 82 上提供此内容
-
 - Web 服务器在系统启动时自动启动
 
 
@@ -350,33 +346,66 @@ gpgcheck=0
 
 ```sh
 semanage port -a -t http_port_t 82 -p tcp
+# semanage 是更改 selinux 安全上下文
+# 所以修改后必须使用 restorecon 恢复安全上下文
+
+resotrecon -rv /var/www/html
+# 恢复文件默认安全上下文
+# -p 递归
+```
+
+- -a, --add
+
+  Add a record of the specified object type
+
+  添加一条上下文
+
+- -t TYPE, --type TYPE
+
+  SELinux type for the object
+
+  对象类型
+
+- -p PROTO, --proto PROTO
+
+  Protocol for the specified port (tcp|udp) or  internet  protocol
+  version for the specified node (ipv4|ipv6).
+
+  指定端口协议
+
+
+
+
+
+```sh
+semanage port -l | grep http_port_t
+# -l, --list, List records of the specified object type
+# 看看是否有81端口
 ```
 
 
 
 ```sh
-semanage port -l | grep 82
-```
+systemctl enabled httpd
+# 开机启动
 
-
-
-```sh
-resotrecon -Rv /var/www/html
-```
-
-
-
-```sh
-systemctl restart httpd
+systemc	restart httpd
 ```
 
 
 
 ```sh
 firewall-cmd --add-port=82/tcp --permanent
+
+firewall-cmd --reload
 ```
 
 
+
+```sh
+firefox 172.25.250.10:82
+# 查看是否显示主页, 如果显示则说明正确
+```
 
 
 
