@@ -1,4 +1,4 @@
-# 考试环境信息
+# s考试环境信息
 
 总分为300分, 210分及以上合格
 
@@ -96,162 +96,6 @@ rht-vmctl stop all
 
 
 
-# 初始化测试环境
-
-将 rhcas8.sh 上传到 foundation0 的 root家目录, 执行并初始化练习环境
-
-```sh
-chmod +x rhcsa8.sh && ./rhcsa8.sh
-```
-
-
-
-```bash
-# 这是 rhcsa8.sh 文件
-
-#!/bin/bash
-
-function wait_ssh {
-WAITIME=0
-while true; do
-	if $(echo "laoma" >/dev/tcp/$1/22) &>/dev/null; then
-        echo "  $1 is running."
-		break
-	else
-		VMNAME=$1
-		rht-vmctl status ${VMNAME}|egrep "${VMNAME}.*RUNNING" -q
-		result=$?
-		if [[ ${result} -eq 0 ]] ; then
-			sleep 30
-		else
-			rht-vmctl reset ${VMNAME}
-		fi
-		[[ $WAITIME -gt 300 ]] && break
-	fi
-	WAITIME=$(expr $WAITIME + 5 )
-done
-}
-
-echo -n "fullreset classroom ... ... "
-echo y | rht-vmctl fullreset classroom &> /dev/null
-echo "DONE"
-
-echo -n "fullreset all ... ... "
-echo y | rht-vmctl fullreset all &> /dev/null
-echo "DONE"
-
-echo -n "Waiting for all vms starting ..... "
-sleep 60
-echo 
-for i in classroom bastion workstation server{a,b};
-do
-    wait_ssh $i
-done
-echo "All vms is running."
-
-if [[ `id -u` -ne 0 ]];then
-    echo "please run as root..."
-    exit 1
-fi
-##### prepare foundation ##########
-echo -n "prepare foundation ... ... "
-sed -i -e 's/servera/mars/g' -e 's/serverb/venus/g' /etc/hosts
-echo DONE
-
-##### prepare classroom #####
-echo -n "prepare classroom ... ... "
-cat > /tmp/prepare_classroom.sh <<eof
-mkdir /rhome
-useradd laoma -d /rhome/laoma -u 2001
-echo redhat | passwd --stdin laoma
-echo laoma > /rhome/laoma/laoma.txt
-echo '/rhome	*(rw,sync)' > /etc/exports
-systemctl enable nfs-server.service --now
-firewall-cmd --set-default-zone=trusted
-
-eof
-scp /tmp/prepare_classroom.sh root@classroom: &> /dev/null && rm -f /tmp/prepare_classroom.sh 
-ssh root@classroom 'chmod +x /root/prepare_classroom.sh;/root/prepare_classroom.sh; rm -f /root/prepare_classroom.sh' &> /dev/null
-echo DONE
-
-##### prepare mars #####
-echo -n "prepare mars ... ... "
-cat > /tmp/prepare_mars.sh <<eof
-sed -i -e 's/servera/mars/g' -e 's/serverb/venus/g' /etc/hosts
-
-yum install -y httpd
-rm -fr /etc/yum.repos.d/rhel_dvd.repo
-echo 'hello laoma' > /var/www/html/file1
-chcon -t samba_share_t /var/www/html/file1
-sed -i 's/^Listen 80/Listen 82/' /etc/httpd/conf/httpd.conf
-
-sed -i '/server 172.25.254.254 iburst/d' /etc/chrony.conf
-systemctl restart chronyd.service
-
-useradd laoma -M -d /rhome/laoma -u 2001
-echo redhat | passwd --stdin laoma
-
-useradd laoniu
-useradd jacques
-rm -fr /home/jacques /var/spool/mail/jacques
-touch /tmp/jacques-file{1..10}
-chown jacques /tmp/jacques-file{1..10}
-
-nmcli connection modify "Wired connection 1" ipv4.address 172.25.250.20/24
-nmcli connection up "Wired connection 1" &
-
-eof
-scp /tmp/prepare_mars.sh root@mars:  &> /dev/null && rm -f /tmp/prepare_mars.sh
-ssh root@mars chmod +x /root/prepare_mars.sh  &> /dev/null
-(ssh root@mars /root/prepare_mars.sh  &> /dev/null ) & 
-echo DONE
-
-##### prepare venus #####
-echo -n "prepare venus ... ... "
-cat > /tmp/prepare_venus.sh <<eof
-hostnamectl set-hostname venus.lab.example.com
-sed -i -e 's/servera/mars/g' -e 's/serverb/venus/g' /etc/hosts
-rm -fr /etc/yum.repos.d/rhel_dvd.repo
-
-echo "n
-p
-1
-
-+256M
-t
-8e
-n
-p
-2
-
-+256M
-t
-2
-82
-w" | fdisk /dev/vdb
-vgcreate laomavg /dev/vdb1 
-lvcreate -L 128M -n laomalv laomavg
-mkfs.xfs /dev/laomavg/laomalv
-mkdir /laoma
-echo "/dev/laomavg/laomalv /laoma xfs defaults 0 0" >> /etc/fstab
-mount -a
-
-mkswap /dev/vdb2
-echo "/dev/vdb2 swap swap defaults 0 0" >> /etc/fstab 
-swapon -a
-
-tuned-adm profile desktop
-
-eof
-scp /tmp/prepare_venus.sh root@venus:  &> /dev/null && rm -f /tmp/prepare_venus.sh
-ssh root@venus 'chmod +x /root/prepare_venus.sh;/root/prepare_venus.sh;rm -f /root/prepare_venus.sh'  &> /dev/null
-echo DONE
-```
-
-
-
-
-
 
 
 
@@ -266,10 +110,6 @@ echo DONE
 
 - 主机名: mars.lab.example.com
 
-  ```bash
-  hostnamectl set-hostname mars.lab.example.com
-  ```
-
 - ip地址: 172.25.250.10
 
 - 子网掩码: 255.255.255.0
@@ -278,7 +118,21 @@ echo DONE
 
 - dns服务器 172.25.250.254
 
-  
+
+
+
+
+
+
+
+
+
+```sh
+hostnamectl set-hostname mars.lab.example.com
+# 设置主机名为 mars.lab.example.com
+```
+
+
 
 ```bash
 nmcli connection modify 'Wired connection 1' ipv4.method manual ipv4.address 172.25.250.10/24 ipv4.gateway 172.25.0.254 ipv4.dns 172.25.250.254
@@ -386,10 +240,8 @@ semanage port -l | grep http_port_t
 
 
 ```sh
-systemctl enabled httpd
-# 开机启动
-
-systemc	restart httpd
+systemctl enabled --now httpd
+# 开机启动, 并立即启动服务
 ```
 
 
@@ -434,14 +286,21 @@ groupadd sysadms
 
 ```sh
 useradd natasha -G sysadms
-# 创建 natasha 用户, 并从组 sysadms
+# 创建 natasha 用户, 并附加到组 sysadms
 ```
+
+- -G, --groups GROUP1[,GROUP2,...[,GROUPN]]]
+             A list of supplementary groups which the user is also a member of. Each group is separated from the next
+             by a comma, with no intervening whitespace. The groups are subject to the same restrictions as the group
+             given with the -g option. The default is for the user to belong only to the initial group.
+
+  用户也是其他组的成员
 
 
 
 ```sh
 useradd harry -G sysadms
-# 创建 harry 用户, 并从组 sysadms
+# 创建 harry 用户, 并附加到组 sysadms
 ```
 
 
@@ -489,9 +348,13 @@ crontab -e -u natasha
 
 创建具有以下特真正的协作目录 /home/managers
 
-- /home/managers 的组所有权是 sysmgrs
-- 目录可被 sysmgrs 组的成员读写访问, 但是其他任何用户不具这些权限(root除外)
+- /home/managers 组所有权是 sysmgrs
+- 目录可被 sysmgrs 组的成员 读, 写, 访问, 但是其他任何用户不具这些权限(root除外)
 - /home/managers 中创建的文件自动将组所有权设置到 sysmgrs组
+
+
+
+
 
 
 
@@ -502,13 +365,24 @@ mkdir /home/managers
 
 
 ```sh
-chgrp sysadms /home/managers
+chown .sysmgrs /home/managers
+# 所属组是 sysmgrs
 ```
 
 
 
 ```sh
-chmod 2770 /home/managers
+chmod g+rwx,o-rwx /home/managers
+# 组的成员 读, 写, 访问
+# 其他成员不能 读, 写, 执行
+```
+
+
+
+```sh
+chmod g+s /home/managers
+# 创建的文件自动所属组
+# 设置 SGID(set group id)
 ```
 
 
@@ -517,17 +391,23 @@ chmod 2770 /home/managers
 
 # 7. 配置 NTP
 
-配置系统, 使其成为
+- 配置系统, 使其成为
 
-classroom.example.com
+  classroom.example.com
 
-的 NTP 客户端
+  的 NTP 客户端
+
+- classroom.example.com 是 sidecar.lab.example.com 的 DNS 别名
 
 
 
-考试时提示:
 
-classroom.example.com 是 sidecar.lab.example.com 的 DNS 别名
+
+
+
+
+
+
 
 
 
@@ -536,7 +416,8 @@ vi /etc/chrony.conf
 ```
 
 ```sh
-server    classroom.exmple.com    iburst
+server classroom.exmple.com iburst
+# 根据实际时间计算出服务器增减时间的比率，然后记录到一个文件中，在系统重启后为系统做出最佳时间补偿调整。
 ```
 
 
@@ -559,15 +440,25 @@ chronyc sources -v
 
 按照以下所述自动挂载远程用户的主目录
 
-- classroom.example.com(172.25.254.254)NFS 导出 /rhome 到系统, 此文件系统包含为用户 laoma 预配置的主目录
+- classroom.example. (172.25.254.254)NFS 导出 /rhome 到系统, 此文件系统包含为用户 laoma 预配置的主目录
 - laoma 的目录是 classroom.example.com:/rhome/laoma
-- laoma 的主目录应自动挂载到本地 /rhome 下的 /rhome/laoma
+- laoma 的主目录应自动挂载到本地 /rhome 下的 laoma
 - 主目录必须可供用户写入
 
 
 
+
+
+
+
+
+
+
+
+
+
 ```sh
-yum install -y autofs
+dnf install -y autofs
 ```
 
 
@@ -578,28 +469,38 @@ vi /etc/auto.master.d/netdir.autofs
 
 ```sh
 /rhome    /etc/auto.netdir
+# /rhome 这个是 挂载目录
+# /etc/auto.netdir 这个是 子配置文件
+# /etc/auto.netdir 这个是 自动挂载的配置文件, 文件名必须以 auto 开头
 ```
 
+- autofs服务程序的**主配置文件**中需要按照**“挂载目录 子配置文件”**的格式写入参数
+- 挂载目录是设备要**挂载位置的上一级目录**
+- 如挂载目录是 /rhome/laoma, 那么此处应该写 /rhome
+- 而对应的子配置文件则是**对这个目录内挂载设备信息的进一步说明**
 
 
-```sh
-cp /etc/auto.misc /etc/auto.netdir
-```
 
 
 
 ```sh
 vi /etc/auto.netdir
+# /etc/auto.netdir 这个是 子配置文件
 ```
 
 ```sh
 laoma -fstype=nfs,rw,sync classroom.example.com:/rhome/laoma
+# laoma 挂载点
+# loama 子配置文件中的 挂载点
+# -fstype 文件类型
+# classroom.example.com:/rhome/laoma 需要挂载的设备名称
 ```
 
 
 
 ```sh
 systemctl enable --now autofs
+# 设置开机启动, 并立即启动服务
 ```
 
 
@@ -627,15 +528,33 @@ ssh laoma@mars.lab.example.com
 
 
 
+
+
+
+
+
+
+
+
+
+
 ```sh
 cp /etc/fstab /var/tmp
+# fstab 属于root用户和root组
 ```
 
 
 
 ```sh
-setfacl -m u:natasha:rw, u:harry:-, o:r /var/tmp/fstab
+setfacl -m u:natasha:rw, u:harry:-wr, o:r /var/tmp/fstab
+# o:r 不能被任何人执行, 且其他用户可以读取
+# u:natasha:rw natasha 用户可以读写
+# u:harry harry 用户无法写入和读取
 ```
+
+-  -M, --modify-file=file  read ACL entries to modify from file
+
+
 
 
 
@@ -650,15 +569,28 @@ setfacl -m u:natasha:rw, u:harry:-, o:r /var/tmp/fstab
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 ```sh
 usermod -u 3533 laoniu
+# -u, --uid UID
 ```
-
-
 
 ```sh
 echo redhat | passwd --stdin laoniu
 ```
+
+
 
 
 
@@ -670,11 +602,13 @@ echo redhat | passwd --stdin laoniu
 
 
 
+
+
+
+
 ```sh
 mkdir /root/findfiles
 ```
-
-
 
 ```sh
 find / -user jacques -exec cp -apr {} /root/findfiles \;
@@ -693,8 +627,20 @@ find / -user jacques -exec cp -apr {} /root/findfiles \;
 
 
 
+
+
+
+
+
+
+
+
 ```sh
 grep crosswords /usr/share/doc/words/readme.txt > /root/list
+# grep crossword ./readme.txt
+# 113,809 official crosswords
+# 4,160 official crosswords delta
+# When combined with the 113,809 crosswords file, it produces the
 ```
 
 
@@ -706,6 +652,12 @@ grep crosswords /usr/share/doc/words/readme.txt > /root/list
 - 创建一个名为 /root/backup.tar.gz 的 tar 存档
 - 存档应包含 /usr/local 的内容
 - 该 tar 存档必须使用 gzip 压缩
+
+
+
+
+
+
 
 
 
@@ -737,11 +689,20 @@ tar cvzf /root/backup.tar.gz /usr/local
 
 
 
+
+
+
+
+
+
+
+
 在启动的时候按e, 编辑启动选项
 
 ```sh
 console=tty0 rd.break
 # 在 linux 开头的行, 末尾加入如上
+# tty Teletypes 电传打字机
 # 通过向内核添加 rd.break 参数来以单用户模式启动
 # C-x 启动进入 switch_root
 ```
@@ -799,6 +760,14 @@ http://content.example.com/rhel8.0/x86_64/dvd/AppStream
 
 
 
+
+
+
+
+
+
+
+
 ```bash
 vim /etc/yum.repos.d/rhel80.repo
 ```
@@ -829,8 +798,30 @@ gpgcheck=0
 
 
 
+
+
+
+
+
+
+
+
+
+
 ```sh
-lvresize -rL 230M /dev/mapper/laomavg-laomalv
+lvresize -rL 230M /dev/laomavg/laomalv
+# lvresize - Resize a logical volume
+# -r|--resizefs
+# -L|--size [+|-]Size[m|UNIT]
+# M 必须是大写的
+```
+
+
+
+```sh
+lvs
+# lvs - Display information about logical volumes
+# 使用lvs命令查看lv空间
 ```
 
 
@@ -845,20 +836,45 @@ lvresize -rL 230M /dev/mapper/laomavg-laomalv
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+```sh
+swapon --show
+# 显示 swap 大小
+# --show 比 -s 获得更好的显示效果
+```
+
+
+
 ```sh
 fdisk /dev/vdb
-# 创建一个分区, 分区容量通过 +1548288 sectors 数量指定(756x1024x2)
-# 分区类型为 82
 ```
 
-```
-
-```
+- 分区的时候选择 主分区
+- First sector (1050624-10485759, default 1050624): 这里默认 直接回车即可
+- Last sector, +sectors or +size{K,M,G,T,P} (1050624-10485759, default 10485759):  +756m(不区分大小写)
+- 然后按 t 更改分区类型
+- 分区类型为 82 Linux swap / Solaris
 
 
 
 ```sh
 mkswap /dev/vdb3
+```
+
+```sh
+swapon /dev/vdb3
+# 激活交换分区
 ```
 
 
@@ -869,16 +885,15 @@ vi /etc/fstab
 
 ```sh
 /dev/vdb3    swap    swap    defaults    0    0
+# 设置开机挂载
+# <device>	<mountpoint>	<type>	<options>	<dump>	<pass>
 ```
 
 
 
 ```sh
-swapon -a
-```
-
-```sh
-swapon -s
+swapon --show
+# 查看是否增加
 ```
 
 
@@ -887,11 +902,22 @@ swapon -s
 
 # 5. 创建逻辑卷
 
-- 创建一个逻辑卷
-- 逻辑卷名为qa, 属于 qagroup 卷组, 大小为 60 个扩展块
+- 创建一个逻辑卷, 逻辑卷名为qa, 属于 qagroup 卷组, 大小为 60 个扩展块
 - qagroup 卷组中的逻辑卷的扩展块大小为 16M
 - 使用 ext3 格式化新逻辑卷
 - 逻辑卷在系统启动时自动挂载到 /mnt/qa
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

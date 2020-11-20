@@ -495,7 +495,7 @@ cpu configuration->svm mode->enabled->F10保存并退出
 
 
 
-
+# links
 
 https://www.faststone.org/FSCaptureDetail.htm
 截图与录屏软件
@@ -666,3 +666,13 @@ LICEcap 是一款用于屏幕录像制作的开源软件
 
 www.dosbox.com
 DOSBox是一种模拟器软件，主要是在IBM PC兼容机下，模拟旧时的操作系统：MS-DOS
+
+
+
+
+
+# 疑问列表
+
+粘滞键是什么意思
+
+专为同时按下两个或多个键有困难的人而设计的。当快捷方式需要组合键时，例如CTRL+P，*粘滞键*可以使您一次只按一个键，而不是同时按两个键
